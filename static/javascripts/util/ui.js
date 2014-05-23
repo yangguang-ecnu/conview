@@ -131,6 +131,7 @@ $('#viewer-canvas').mousedown( function (event) {
 	}
 	event.preventDefault();
 	viewer.redraw();
+	return false;
 });
 
 $('#viewer-canvas').mouseup( function (event) {
@@ -142,6 +143,7 @@ $('#viewer-canvas').mouseup( function (event) {
 	}
 	event.preventDefault();
 	viewer.redraw();
+	return false;
 });
 
 $('#viewer-canvas').mousemove( function (event) {
@@ -161,10 +163,10 @@ $('#viewer-canvas').on("mousewheel", function(event, delta, deltaX, deltaY) {
 		return;
 	}
 	if (delta < 0) {
-		arcball.zoomIn();
+		arcball.zoomOut();
 	}
 	else {
-		arcball.zoomOut();
+		arcball.zoomIn();
 	}
 
 	viewer.redraw();
@@ -201,7 +203,6 @@ $(document).bind('keypress', function(e) {
 //
 //***************************************************************************************************/
 function addElementToUI ( el ) {
-	console.log( 'start loading ' + el.id );
 	if ( el.type == 'tex' ) {
 		$('#textureSelect').append($('<option></option>').val(el.id).html(el.name));
 		$('#textureSelect2').append($('<option></option>').val(el.id).html(el.name));
@@ -234,12 +235,13 @@ function toggleCallback (id, active) {
 var elementsLoading = 0;
 var allStarted = false;
 function loadElementStart( el ) {
+	//console.log( 'start loading ' + el.id );
 	addElementToUI( el );
 	++elementsLoading;
 }
 
 function elementLoaded( el ) {
-	console.log( 'finished loading ' + el.id );
+	//console.log( 'finished loading ' + el.id );
 	$('#toggle-' + el.id).removeClass('disabled');
     $('#toggle-' + el.id).toggleClass('active', el.display);
     --elementsLoading;
@@ -249,11 +251,10 @@ function elementLoaded( el ) {
 	    console.log( 'all elements loaded' );
 		$('#status').css('display', 'none');
 		
-		scene.setValue('tex1', $('#textureSelect').children().first().val() );
-		$('#sliceX').attr('max', io.niftiis()[$('#textureSelect').children().first().val()].getDims()[0] );
-		$('#sliceY').attr('max', io.niftiis()[$('#textureSelect').children().first().val()].getDims()[1] );
-		$('#sliceZ').attr('max', io.niftiis()[$('#textureSelect').children().first().val()].getDims()[2] );
-		
+		scene.setValue('tex1', 'tex1' );
+        $('#sliceX').attr('max', io.niftiis()['tex1'].getDims()[0] );
+        $('#sliceY').attr('max', io.niftiis()['tex1'].getDims()[1] );
+        $('#sliceZ').attr('max', io.niftiis()['tex1'].getDims()[2] );
 		
 		scene.init();
 		scene.setValue('loadingComplete', true );
@@ -269,100 +270,6 @@ function allElementsLoaded() {
 // bind controls
 //
 //***************************************************************************************************/
-//**********************************************************************************************************
-//*
-//*  tabbed menu left side
-//*
-//**********************************************************************************************************
-
-// controls tab
-$('a[href="#controls"]').click(function(e) {
-    e.preventDefault();
-    if( $('#mriTab').css('display') === "block" ) {
-    	$('#mriTab').slideToggle();
-    	$('a[href="#textures"]').css('font-weight', 'normal');
-    }
-    if( $('#elementTab').css('display') === "block" ) {
-    	$('#elementTab').slideToggle();
-    	$('a[href="#elements"]').css('font-weight', 'normal');
-    }
-    if( $('#infoTab').css('display') === "block" ) {
-    	$('#infoTab').slideToggle();
-    	$('a[href="#info"]').css('font-weight', 'normal');
-    }
-    if( $('#controlTab1').css('display') != "block" ) {
-    	$('#controlTab1').slideToggle();
-    	$('a[href="#controls"]').css('font-weight', 'bold');
-    }
-    return false;
-});
-
-// MRI tab
-$('a[href="#textures"]').click(function(e) {
-    e.preventDefault();
-    if( $('#controlTab1').css('display') === "block" ) {
-    	$('#controlTab1').slideToggle();
-    	$('a[href="#controls"]').css('font-weight', 'normal');
-    }
-    if( $('#elementTab').css('display') === "block" ) {
-    	$('#elementTab').slideToggle();
-    	$('a[href="#elements"]').css('font-weight', 'normal');
-    }
-    if( $('#infoTab').css('display') === "block" ) {
-    	$('#infoTab').slideToggle();
-    	$('a[href="#info"]').css('font-weight', 'normal');
-    }
-    if( $('#mriTab').css('display') != "block" ) {
-    	$('#mriTab').slideToggle();
-    	$('a[href="#textures"]').css('font-weight', 'bold');
-    }
-    return false;
-});
-
-// elements tab
-$('a[href="#elements"]').click(function(e) {
-    e.preventDefault();
-    if( $('#controlTab1').css('display') === "block" ) {
-    	$('#controlTab1').slideToggle();
-    	$('a[href="#controls"]').css('font-weight', 'normal');
-    }
-    if( $('#mriTab').css('display') === "block" ) {
-    	$('#mriTab').slideToggle();
-    	$('a[href="#textures"]').css('font-weight', 'normal');
-    }
-    if( $('#infoTab').css('display') === "block" ) {
-    	$('#infoTab').slideToggle();
-    	$('a[href="#info"]').css('font-weight', 'normal');
-    }
-    if( $('#elementTab').css('display') != "block" ) {
-    	$('#elementTab').slideToggle();
-    	$('a[href="#elements"]').css('font-weight', 'bold');
-    }
-    return false;
-});
-
-// info tab
-$('a[href="#info"]').click(function(e) {
-    e.preventDefault();
-    if( $('#controlTab1').css('display') === "block" ) {
-    	$('#controlTab1').slideToggle();
-    	$('a[href="#controls"]').css('font-weight', 'normal');
-    }
-    if( $('#mriTab').css('display') === "block" ) {
-    	$('#mriTab').slideToggle();
-    	$('a[href="#textures"]').css('font-weight', 'normal');
-    }
-    if( $('#elementTab').css('display') === "block" ) {
-    	$('#elementTab').slideToggle();
-    	$('a[href="#elements"]').css('font-weight', 'normal');
-    }
-    if( $('#infoTab').css('display') != "block" ) {
-    	$('#infoTab').slideToggle();
-    	$('a[href="#info"]').css('font-weight', 'bold');
-    }
-    return false;
-});
-
 
 
 //**********************************************************************************************************
@@ -394,69 +301,24 @@ var sliderChangeHandler = function(property) {
 $('#sliceX').bind('change', sliderChangeHandler('sagittal')).trigger('change');
 $('#sliceY').bind('change', sliderChangeHandler('coronal')).trigger('change');
 $('#sliceZ').bind('change', sliderChangeHandler('axial')).trigger('change');
-$('#transp').bind('change', sliderChangeHandler('transparency')).trigger('change');
-$('#threshold1').bind('change', sliderChangeHandler('threshold1')).trigger('change');
-$('#threshold2').bind('change', sliderChangeHandler('threshold2')).trigger('change');
-$('#alpha2').bind('change', sliderChangeHandler('alpha2')).trigger('change');
 
-$('#textureSelect').bind('change',function() {
-	scene.setValue('tex1', $('#textureSelect').val() );
-	$('#sliceX').attr('max', io.niftiis()[$('#textureSelect').val()].getDims()[0] );
-	$('#sliceY').attr('max', io.niftiis()[$('#textureSelect').val()].getDims()[1] );
-	$('#sliceZ').attr('max', io.niftiis()[$('#textureSelect').val()].getDims()[2] );
+
+$('a[href="#gray"]').click(function(e) {
+    e.preventDefault();
+    scene.setValue( 'showSlice', true );
+    scene.setValue('tex1', 'tex1' );
+   return false;
 });
 
-$('#textureSelect2').bind('change',function() {
-	scene.setValue('tex2', $('#textureSelect2').val() );
-	scene.getColormapValues( true, setColormapValues );
+$('a[href="#fargb"]').click(function(e) {
+    e.preventDefault();
+    scene.setValue( 'showSlice', true );
+    scene.setValue('tex1', 'tex2' );
+    return false;
 });
 
-$('#colormapSelect').bind('change',function() {
-	scene.setValue('colormap', $('#colormapSelect').val() );
-	scene.getColormapValues( false, setColormapValues );
-});
-
-function setColormapValues( data ) {
-	$('#colormapSelect option[value='+ data.id + ']').attr('selected', true);
-	$('#threshold1').attr('min', data.t1min );
-	$('#threshold1').attr('max', data.t1max );
-	$('#threshold1').attr('step', data.t1step );
-	$('#threshold2').attr('min', data.t2min );
-	$('#threshold2').attr('max', data.t2max );
-	$('#threshold2').attr('step', data.t2step );
-};
-
-$('#interpolate').bind('click',function() { io.setTexInterpolation( $('#textureSelect').val(), $('#interpolate').attr('checked')?true:false ); });
 
 
-
-//**********************************************************************************************************
-//*
-//* elements tab  
-//*
-//**********************************************************************************************************
-$('#elementSelect').change( function() { 
-	$('#elementAlpha').val( scene.getElementAlpha( $('#elementSelect option:selected').val() ) * 100 );
-});
-
-var elementAlphaHandler = function() {
-    return function(e) {
-    	scene.setElementAlpha( $('#elementSelect option:selected').val(), $('#elementAlpha').val() / 100 );
-    };
-};
-
-$('#elementAlpha').bind('change', elementAlphaHandler() ).trigger('change');
-
-
-//**********************************************************************************************************
-//*
-//*  controls tab
-//*
-//**********************************************************************************************************
-$('#button_localFiberColor').bind('click',function() { scene.toggleValue('localFibreColor'); });
-$('#button_textureInterpolation').bind('click',function() { scene.toggleValue('renderTubes'); });
-$('#button_toggleSlices').bind('click',function() { scene.toggleValue('showSlices'); });
-//$('#button_toggleTooltips').bind('click',function() { Viewer.control('tooltips'); });
 
 
 //**********************************************************************************************************

@@ -21,7 +21,7 @@ picking.showTooltips = false;
 //
 //***************************************************************************************************/
 function loadElements( addToUI, elementLoaded, allElementsLoaded ) {
-	console.log( 'start loading elements' );
+	//console.log( 'start loading elements' );
 	
 	 $.getJSON(settings.DATA_URL + "elements.json", function(data) {
      // alle Elemente durchgehen, 
@@ -117,7 +117,7 @@ function loadMesh( el, elementLoaded ) {
 		pc[1] = picking.pickColor[1] / 255;
 		pc[2] = picking.pickColor[2] / 255;
 		element.pickColor = pc;
-		
+		element.display2 = false;
 		meshes[el.id] = element;
 		
 		elementLoaded( el );
@@ -138,26 +138,27 @@ function loadFibre(el, elementLoaded) {
 			}
 		}
 		
-//		var colors = [];
-//		if (!data.colors) {
-//			colorSize = (data.vertices.length / 3) * 4;
-//			
-//			if (el.color) {
-//				for ( var k = 0; k < colorSize / 4; ++k) {
-//					colors.push(el.color.r);
-//					colors.push(el.color.g);
-//					colors.push(el.color.b);
-//					colors.push(1);
-//				}
-//			} else {
-//				for ( var k = 0; k < colorSize; ++k) {
-//					colors.push(1);
-//				}
-//			}
-//		}
-//		else {
-//			colors = data.colors;
-//		}
+		var colors = [];
+		
+		if (!data.colors && !el.savedColor) {
+			colorSize = (data.vertices.length / 3) * 4;
+			
+			if (el.color) {
+				for ( var k = 0; k < colorSize / 4; ++k) {
+					colors.push(el.color.r);
+					colors.push(el.color.g);
+					colors.push(el.color.b);
+					colors.push(1);
+				}
+			} else {
+				for ( var k = 0; k < colorSize; ++k) {
+					colors.push(1);
+				}
+			}
+		}
+		else {
+			colors = data.colors;
+		}
 		
 		element.transparency = el.transparency;
 		element.hasBuffer = false;
@@ -206,15 +207,18 @@ function loadFibre(el, elementLoaded) {
 			element.tubeVertices.push( tubeVertices[ i * 3 ]);
 			element.tubeVertices.push( tubeVertices[ i * 3 + 1 ]);
 			element.tubeVertices.push( tubeVertices[ i * 3 + 2 ]);
+			
 			element.tubeVertices.push( tubeNormals[ i * 3 ] );
 			element.tubeVertices.push( tubeNormals[ i * 3 + 1 ] );
 			element.tubeVertices.push( tubeNormals[ i * 3 + 2 ] );
+
+			element.tubeVertices.push( tubeTexCoords[ i * 2 ]);
+			element.tubeVertices.push( tubeTexCoords[ i * 2 + 1 ]);
+			
 //			element.tubeVertices.push( tubeColors[ i * 4 ]);
 //			element.tubeVertices.push( tubeColors[ i * 4 + 1 ]);
 //			element.tubeVertices.push( tubeColors[ i * 4 + 2 ]);
 //			element.tubeVertices.push( tubeColors[ i * 4 + 3 ]);
-			element.tubeVertices.push( tubeTexCoords[ i * 2 ]);
-			element.tubeVertices.push( tubeTexCoords[ i * 2 + 1 ]);
 		}
 		
 		
@@ -227,6 +231,7 @@ function loadFibre(el, elementLoaded) {
 		element.lineStarts = lineStarts;
 
 		element.color = el.color;
+		element.display2 = false;
 		
 		fibres[el.id] = element;
 		
@@ -244,12 +249,19 @@ function calcTubeNormals(elem) {
 
 		var x1=0, x2=0, y1=0, y2=0, z1=0, z2=0, nx=0, ny=0, nz=0;
 
-		tubeNormals.push(0);
-		tubeNormals.push(0);
-		tubeNormals.push(0);
-		tubeNormals.push(0);
-		tubeNormals.push(0);
-		tubeNormals.push(0);
+		x1 = elem.vertices[0];
+		y1 = elem.vertices[1];
+		z1 = elem.vertices[2];
+		x2 = elem.vertices[3];
+		y2 = elem.vertices[4];
+		z2 = elem.vertices[5];
+		
+		tubeNormals.push(x1-x2);
+		tubeNormals.push(y1-y2);
+		tubeNormals.push(z1-z2);
+		tubeNormals.push(x1-x2);
+		tubeNormals.push(y1-y2);
+		tubeNormals.push(z1-z2);
 
 		for ( var j = 1; j < length - 1; ++j) {
 			x1 = elem.vertices[lineStart + 3 * j - 3];

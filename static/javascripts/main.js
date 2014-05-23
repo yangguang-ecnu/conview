@@ -11,8 +11,8 @@ requirejs.config({
     }
 });
 
-require(['jquery', 'ui', 'io', './gfx/viewer', './gfx/mygl', 'html5slider'], 
-		function($, ui, io, viewer, mygl ) {
+require(['jquery', 'ui', 'io', './gfx/viewer', './gfx/mygl', './gfx/scene', 'html5slider'], 
+		function($, ui, io, viewer, mygl, scene ) {
     $(function() {
     	// Sobald wir mit dem DOM arbeiten koennen,
         $(document).ready(function() {
@@ -34,6 +34,42 @@ require(['jquery', 'ui', 'io', './gfx/viewer', './gfx/mygl', 'html5slider'],
                 $('html').addClass('no-webgl');
             }
             
+            $.getJSON( settings.DATA_URL + "ui.json", function( data ) {
+            	console.log( "test" );
+            	$.each( data, function( i, el ) {
+            		$( "#" + el.buttonID ).click( function(e) {
+    					e.preventDefault();
+    					scene.toggleElements( el.toggles, iconCallback );
+    					scene.showElements( el.enables, iconCallback );
+    					scene.hideElements( el.disables, iconCallback );
+    					return false;
+    				}).mouseenter( function(e) {
+    					e.preventDefault();
+    					scene.mouseEnterElements( el.mouseover, iconCallback );
+    					return false;
+    				}).mouseleave( function(e) {
+    					e.preventDefault();
+    					scene.mouseLeaveElements( el.mouseover, iconCallback );
+    					return false;
+    				});
+            	});
+            });
+            
+            function iconCallback( id, status )
+            {
+            	var imgs = $('#'+ id ).children();
+            	if ( status )
+            	{
+            		imgs.eq( 0 ).hide();
+            		imgs.eq( 1 ).show();
+            	}
+            	else
+            	{
+            		imgs.eq( 1 ).hide();
+            		imgs.eq( 0 ).show();
+            	}
+            }
+            
             // INIT VIEWER
             window.setTimeout(function() {
                 var $vc = $('#viewer-canvas');
@@ -53,7 +89,7 @@ require(['jquery', 'ui', 'io', './gfx/viewer', './gfx/mygl', 'html5slider'],
                 	}
                 	                	
                 	viewer.init({
-                	    'backgroundColor': [0.99,0.99,0.98,1]
+                	    'backgroundColor': [0.0,0.0,0.0,0]
                 	}, loadElements);
                 	$(window).trigger('resize');
                 };

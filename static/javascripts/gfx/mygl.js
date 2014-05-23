@@ -149,6 +149,7 @@ function initShader(name) {
 	
 	shaderPrograms[name].uPMatrix        = gl.getUniformLocation(shaderPrograms[name], "uPMatrix");
 	shaderPrograms[name].uMVMatrix       = gl.getUniformLocation(shaderPrograms[name], "uMVMatrix");
+	shaderPrograms[name].uMVMatrixInvert = gl.getUniformLocation(shaderPrograms[name], "uMVMatrixInvert");
 	shaderPrograms[name].uOMatrix        = gl.getUniformLocation(shaderPrograms[name], "uOMatrix");
 	shaderPrograms[name].uLightLocation  = gl.getUniformLocation(shaderPrograms[name], "uLightLocation");
 	

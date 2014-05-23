@@ -20,10 +20,12 @@ variables["loadingComplete"] = false;
 
 var meshes = {};
 var fibres = {};
+var textures = {};
 
 function init () {
 	meshes = io.meshes();
 	fibres = io.fibres();
+	textures = io.textures();
 }
 
 function getValue( name ) {
@@ -93,16 +95,185 @@ function getColormapValues( suggest, callback ) {
 function toggleElement(id, callback) {
 	if (id in meshes) {
 		meshes[id].display = !meshes[id].display;
-		callback( id, meshes[id].display);
+		callback( id, meshes[id].display || meshes[id].display2 );
 	}
 	else if (id in fibres) {
 		fibres[id].display = !fibres[id].display;
-		callback( id, fibres[id].display);
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id in textures) {
+		variables["tex1"] = id;
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = !variables["showSlices"];
 	}
 	else {
 		console.warn('Element "' + id + '" is unknown.');
 		return false;
 	}
+}
+
+function toggleElements(ids, callback) {
+	$.each( ids, function( index, id ) {
+	if (id in meshes) {
+		meshes[id].display = !meshes[id].display;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display = !fibres[id].display;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id in textures) {
+		variables["tex1"] = id;
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = !variables["showSlices"];
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+	});
+}
+
+function showElement(id, callback) {
+	if (id in meshes) {
+		meshes[id].display = true;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display = true;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = true;
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+}
+
+function mouseEnterElement(id, callback) {
+	if (id in meshes) {
+		meshes[id].display2 = true;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display2 = true;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+}
+
+function showElements(ids, callback) {
+	$.each( ids, function( index, id ) {
+	if (id in meshes) {
+		meshes[id].display = true;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display = true;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = true;
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+	});
+}
+
+function mouseEnterElements(ids, callback) {
+	$.each( ids, function( index, id ) {
+	if (id in meshes) {
+		meshes[id].display2 = true;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display2 = true;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+	});
+}
+
+function hideElement(id, callback) {
+	if (id in meshes) {
+		meshes[id].display = false;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display = false;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = false;
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+}
+
+function mouseLeaveElement(id, callback) {
+	if (id in meshes) {
+		meshes[id].display2 = false;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display2 = false;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+}
+
+function hideElements(ids, callback) {
+	$.each( ids, function( index, id ) {
+	if (id in meshes) {
+		meshes[id].display = false;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display = false;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else if (id == "slices" ) {
+		variables["showSlices"] = false;
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+	});
+}
+
+function mouseLeaveElements(ids, callback) {
+	$.each( ids, function( index, id ) {
+	if (id in meshes) {
+		meshes[id].display2 = false;
+		callback( id, meshes[id].display || meshes[id].display2 );
+	}
+	else if (id in fibres) {
+		fibres[id].display2 = false;
+		callback( id, fibres[id].display || fibres[id].display2 );
+	}
+	else {
+		console.warn('Element "' + id + '" is unknown.');
+		return false;
+	}
+	});
 }
 
 function getElementAlpha(id) {
@@ -135,6 +306,15 @@ return {
 	fval : fval,
 	getColormapValues: getColormapValues,
 	toggleElement : toggleElement,
+	toggleElements : toggleElements,
+	showElement : showElement,
+	mouseEnterElement : mouseEnterElement,
+	mouseEnterElements : mouseEnterElements,
+	showElements : showElements,
+	hideElement : hideElement,
+	mouseLeaveElement : mouseLeaveElement,
+	hideElements : hideElements,
+	mouseLeaveElements : mouseLeaveElements,
 	getElementAlpha : getElementAlpha,
 	setElementAlpha : setElementAlpha,
 	toggleValue : toggleValue
